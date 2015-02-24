@@ -115,8 +115,18 @@ def game_update():
                 terminate()
 
     # check if the worm has hit itself or the edge
-    if gWormCoords[HEAD]['x'] == -1 or gWormCoords[HEAD]['x'] == CELLWIDTH or gWormCoords[HEAD]['y'] == -1 or gWormCoords[HEAD]['y'] == CELLHEIGHT:
-        return True # game over, return True
+    if gWormCoords[HEAD]['x'] == -1:
+        gWormCoords[HEAD]['x'] = gWormCoords[HEAD]['x'] + 32
+		
+    if gWormCoords[HEAD]['x'] == CELLWIDTH:
+        gWormCoords[HEAD]['x'] = gWormCoords[HEAD]['x'] - 32
+		
+    if gWormCoords[HEAD]['y'] == -1:
+        gWormCoords[HEAD]['y'] = gWormCoords[HEAD]['y'] + 24
+		
+    if gWormCoords[HEAD]['y'] == CELLHEIGHT:
+        gWormCoords[HEAD]['y'] = gWormCoords[HEAD]['y'] - 24
+	
     for wormBody in gWormCoords[1:]:
         if wormBody['x'] == gWormCoords[HEAD]['x'] and wormBody['y'] == gWormCoords[HEAD]['y']:
             return True # game over, return True
