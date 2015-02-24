@@ -31,6 +31,7 @@ RED       = (255,   0,   0)
 GREEN     = (  0, 255,   0)
 DARKGREEN = (  0, 155,   0)
 DARKGRAY  = ( 40,  40,  40)
+BLUE      = (  0,   0, 255)
 BGCOLOR = BLACK
 
 UP = 'up'
@@ -52,6 +53,10 @@ gWormCoords = [{'x': gStartx,     'y': gStarty},
 gDirection = RIGHT
 
 gApple = {'x': 0, 'y': 0}
+
+gBonusApple = {'x': 0, 'y': 0}
+
+gBonusCounter = 0
 
 #
 #
@@ -82,7 +87,7 @@ def runGame():
 
 
 def game_init():
-    global gWormCoords, gDirection, gApple
+    global gWormCoords, gDirection, gApple, gBonusApple
 
     # Set a random start point.
     gStartx = random.randint(5, CELLWIDTH - 6)
@@ -94,10 +99,11 @@ def game_init():
         
     # Start the gApple in a random place.
     gApple = getRandomLocation();
+    gBonusApple = getRandomLocation();
 
 
 def game_update():
-    global gWormCoords, gDirection, gApple
+    global gWormCoords, gDirection, gApple, gBonusApple, gBonusCounter
 
     for event in pygame.event.get(): # event handling loop
         if event.type == QUIT:
@@ -129,12 +135,18 @@ def game_update():
 	
     for wormBody in gWormCoords[1:]:
         if wormBody['x'] == gWormCoords[HEAD]['x'] and wormBody['y'] == gWormCoords[HEAD]['y']:
+            gBonusCounter = 0
             return True # game over, return True
 
-    # check if worm has eaten an apply
+    # check if worm has eaten an apple
     if gWormCoords[HEAD]['x'] == gApple['x'] and gWormCoords[HEAD]['y'] == gApple['y']:
         # don't remove worm's tail segment
         gApple = getRandomLocation() # set a new gApple somewhere
+	# check if worm has eaten a bonus apple
+    elif gWormCoords[HEAD]['x'] == gBonusApple['x'] and gWormCoords[HEAD]['y'] == gBonusApple['y'] and bonusIsSpawned(len(gWormCoords) -3):
+        # don't remove worm's tail segment
+        gBonusApple = getRandomLocation() # set a new gBonusApple somewhere
+        gBonusCounter = gBonusCounter + 1
     else:
         del gWormCoords[-1] # remove worm's tail segment
 
@@ -155,6 +167,9 @@ def game_render():
     DISPLAYSURF.fill(BGCOLOR)
     drawGrid()
     drawWorm(gWormCoords)
+    if bonusIsSpawned(len(gWormCoords) -3):
+        drawBonusApple(gBonusApple)
+
     drawApple(gApple)
     drawScore(len(gWormCoords) - 3)
     pygame.display.update()
@@ -221,6 +236,11 @@ def terminate():
 def getRandomLocation():
     return {'x': random.randint(0, CELLWIDTH - 1), 'y': random.randint(0, CELLHEIGHT - 1)}
 
+def bonusIsSpawned(score):
+    if (score % 5) == 0 and score > 0:
+	    return True
+    else:
+	    return False
 
 def showGameOverScreen():
     gameOverFont = pygame.font.Font('freesansbold.ttf', 150)
@@ -245,6 +265,7 @@ def showGameOverScreen():
         pygame.time.wait(100)
 
 def drawScore(score):
+    score = score + (gBonusCounter * 5) - gBonusCounter #adds 5 to the score for each bonus apple eaten
     scoreSurf = BASICFONT.render('Score: %s' % (score), True, WHITE)
     scoreRect = scoreSurf.get_rect()
     scoreRect.topleft = (WINDOWWIDTH - 120, 10)
@@ -266,6 +287,13 @@ def drawApple(coord):
     y = coord['y'] * CELLSIZE
     appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
     pygame.draw.rect(DISPLAYSURF, RED, appleRect)
+
+
+def drawBonusApple(coord):
+    x = coord['x'] * CELLSIZE
+    y = coord['y'] * CELLSIZE
+    appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
+    pygame.draw.rect(DISPLAYSURF, BLUE, appleRect)
 
 
 def drawGrid():
