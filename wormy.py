@@ -79,14 +79,10 @@ def init():
     
 def runGame():
     game_init()
-    DISPLAYSURF.fill(BGCOLOR)
-    countDown3()
-    DISPLAYSURF.fill(BGCOLOR)
-    countDown2()
-    DISPLAYSURF.fill(BGCOLOR)
-    countDown1()
-    DISPLAYSURF.fill(BGCOLOR)
-    countDownGo()
+    display = ['3', '2', '1', 'Start!']
+    for index in display:
+        DISPLAYSURF.fill(BGCOLOR)
+        countDown(index)
     while True: # main game loop
         game_over = game_update()
         game_render()
@@ -250,42 +246,13 @@ def bonusIsSpawned(score):
     else:
 	    return False
 
-def countDown3():
+
+def countDown(count):
     gameOverFont = pygame.font.Font('freesansbold.ttf', 150)
-    countDownSurf = gameOverFont.render('3', True, WHITE)
+    countDownSurf = gameOverFont.render(count, True, WHITE)
     countDownRect = countDownSurf.get_rect()
     countDownRect.midtop = (WINDOWWIDTH / 2, countDownRect.height + 5 + 25)
     DISPLAYSURF.blit(countDownSurf, countDownRect)
-    pygame.display.update()
-    pygame.time.wait(1000)
-
-
-def countDown2():
-    gameOverFont = pygame.font.Font('freesansbold.ttf', 150)
-    countDown2Surf = gameOverFont.render('2', True, WHITE)
-    countDown2Rect = countDown2Surf.get_rect()
-    countDown2Rect.midtop = (WINDOWWIDTH / 2, countDown2Rect.height + 5 + 25)
-    DISPLAYSURF.blit(countDown2Surf, countDown2Rect)
-    pygame.display.update()
-    pygame.time.wait(1000)
-
-
-def countDown1():
-    gameOverFont = pygame.font.Font('freesansbold.ttf', 150)
-    countDown1Surf = gameOverFont.render('1', True, WHITE)
-    countDown1Rect = countDown1Surf.get_rect()
-    countDown1Rect.midtop = (WINDOWWIDTH / 2, countDown1Rect.height + 5 + 25)
-    DISPLAYSURF.blit(countDown1Surf, countDown1Rect)
-    pygame.display.update()
-    pygame.time.wait(1000)
-
-
-def countDownGo():
-    gameOverFont = pygame.font.Font('freesansbold.ttf', 150)
-    countDownGoSurf = gameOverFont.render('Start', True, WHITE)
-    countDownGoRect = countDownGoSurf.get_rect()
-    countDownGoRect.midtop = (WINDOWWIDTH / 2, countDownGoRect.height + 5 + 25)
-    DISPLAYSURF.blit(countDownGoSurf, countDownGoRect)
     pygame.display.update()
     pygame.time.wait(1000)
 
