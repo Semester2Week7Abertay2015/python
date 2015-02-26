@@ -79,11 +79,15 @@ def init():
     
 def runGame():
     game_init()
+    song = pygame.mixer.Sound('ElectroCabello.ogg')
+    clock = pygame.time.Clock()
+    song.play()
     display = ['3', '2', '1', 'Start!']
     for index in display:
         DISPLAYSURF.fill(BGCOLOR)
         countDown(index)
     while True: # main game loop
+        clock.tick(100)
         game_over = game_update()
         game_render()
         if game_over == True:
